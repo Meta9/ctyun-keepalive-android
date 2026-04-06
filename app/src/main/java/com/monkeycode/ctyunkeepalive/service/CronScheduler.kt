@@ -25,14 +25,14 @@ class CronScheduler(
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 if (alarmManager.canScheduleExactAlarms()) {
-                    Log.d(TAG, "schedule exact alarm at=$nextAt")
+                    Log.d(TAG, "Exact alarm allowed, schedule at=$nextAt")
                     alarmManager.setExactAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         nextAt,
                         pendingIntent
                     )
                 } else {
-                    Log.w(TAG, "exact alarm not allowed, fallback to inexact alarm at=$nextAt")
+                    Log.w(TAG, "Exact alarm not allowed, fallback to setAndAllowWhileIdle at=$nextAt")
                     alarmManager.setAndAllowWhileIdle(
                         AlarmManager.RTC_WAKEUP,
                         nextAt,
@@ -47,7 +47,7 @@ class CronScheduler(
                 )
             }
         } catch (e: SecurityException) {
-            Log.e(TAG, "failed to schedule exact alarm, fallback to inexact", e)
+            Log.e(TAG, "SecurityException when scheduling exact alarm", e)
             try {
                 alarmManager.setAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
@@ -55,10 +55,10 @@ class CronScheduler(
                     pendingIntent
                 )
             } catch (fallbackError: Exception) {
-                Log.e(TAG, "fallback alarm scheduling failed", fallbackError)
+                Log.e(TAG, "Fallback alarm scheduling failed", fallbackError)
             }
         } catch (e: Exception) {
-            Log.e(TAG, "unexpected error while scheduling alarm", e)
+            Log.e(TAG, "Unexpected error when scheduling alarm", e)
         }
     }
 
